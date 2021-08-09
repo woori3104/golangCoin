@@ -2,14 +2,25 @@ package main
 
 import (
 	"fmt"
+	"github/woori3104/golangCoin/blockchain"
+	"html/template"
 	"log"
 	"net/http"
 )
 
+type homeData struct {
+	// html template에서 쓰려면 대문자로 해야함
+	PageTitle string
+	Blocks    []*blockchain.Block
+}
+
 const port string = ":4000"
 
 func home(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(rw, "Hello from home!")
+	// home.html을 parse
+	tmpl := template.Must(template.ParseFiles("templates/home.html"))
+	data := homeData{"Home", blockchain.GetBlockchain().AllBlocks()}
+	tmpl.Execute(rw, data)
 }
 
 func main() {
